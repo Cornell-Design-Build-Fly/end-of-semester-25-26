@@ -1,0 +1,23 @@
+#  Duck Force One mass file
+#  All units: meters, kg, seconds
+
+Lunit = 1.0 m
+Munit = 1.0 kg
+Tunit = 1.0 s
+
+g   = 9.81
+rho = 1.225
+
+#  mass      x        y       z        description
+   0.353   -0.303   0.000  -0.075   ! motor
+   0.799   -0.100   0.000  -0.075   ! battery + prop
+   0.478    0.000   0.000   0.000   ! fuselage
+   0.189    0.103   0.000   0.000   ! main spar
+   0.044    0.241   0.000   0.000   ! mini spar
+   0.295    0.673   0.000   0.000   ! tail spar + banner release
+   0.122   -0.227   0.000   0.000   ! nosecone
+   0.300    0.076   0.000   0.000   ! main gear
+   0.100   -0.157   0.000   0.000   ! front gear
+   0.476    0.154   0.000   0.000   ! wing
+   0.150    0.873   0.000   0.000   ! hstab
+   0.150    0.873   0.000   0.000   ! vstab
