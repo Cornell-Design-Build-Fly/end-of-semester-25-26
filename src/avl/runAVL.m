@@ -1,115 +1,95 @@
-function out = runAVL(geom, flight)
+function out = runAVL(geom, V)
 % runAVL  Run a trimmed AVL analysis and return paths to output files.
 %
-%   out = runAVL(geom, flight)
+%   out = runAVL(geom, V)
 %
 %   Inputs:
-%     geom    -- geometry struct from defineGeom.m
-%     flight  -- flight condition struct with fields:
-%                  flight.V      [m/s]   cruise velocity
-%                  flight.rho    [kg/m3] air density (default 1.225)
-%                  flight.mass   [kg]    total aircraft mass (default geom.mass)
-%
-%   Output:
-%     out.forces_file      -- path to FT forces output text file
-%     out.stability_file   -- path to ST stability derivatives output text file
-%     out.status           -- AVL exit status (0 = clean)
-%
-%   What this runs (equivalent manual session):
-%     OPER
-%       A C [cruise_CL]      -- constrain alpha to give level-flight CL
-%       D1 PM 0              -- elevator to zero pitching moment (trimmed)
-%       X                    -- execute
-%       FT                   -- forces output
-%       fs forces.txt        -- write to file
-%       ST                   -- stability derivatives
-%       ss stability.txt     -- write to file
-%       (return)             -- exit OPER
-%     QUIT
+%     geom  -- geometry struct from defineGeom.m
+%     V     -- cruise velocity [m/s]
 
 cfg = avlConfig();
 
-% ── Defaults ─────────────────────────────────────────────────────────────
-if ~isfield(flight, 'rho'),  flight.rho  = 1.225;     end
-if ~isfield(flight, 'mass'), flight.mass = geom.mass;  end
+% ── Flight condition ──────────────────────────────────────────────────────
+flight.V    = V;
+flight.rho  = 1.225;
+flight.mass = geom.mass;
+
+g         = 9.81;
+CL_cruise = (2 * flight.mass * g) / (flight.rho * V^2 * geom.Sref);
+
+fprintf('Flight condition:\n')
+fprintf('  V         = %.2f m/s\n',   V)
+fprintf('  rho       = %.4f kg/m3\n', flight.rho)
+fprintf('  mass      = %.3f kg\n',    flight.mass)
+fprintf('  CL_cruise = %.4f\n',       CL_cruise)
 
 % ── File paths ────────────────────────────────────────────────────────────
-avl_file      = fullfile(cfg.work_dir, 'dfo.avl');
-mass_file     = fullfile(cfg.work_dir, 'dfo.mass');
-cmd_file      = fullfile(cfg.work_dir, 'avl_run_cmd.txt');
-forces_file   = fullfile(cfg.work_dir, 'dfo_forces.txt');
+avl_file       = fullfile(cfg.work_dir, 'dfo.avl');
+mass_file      = fullfile(cfg.work_dir, 'dfo.mass');
+cmd_file       = fullfile(cfg.work_dir, 'avl_run_cmd.txt');
+bat_file       = fullfile(cfg.work_dir, 'run_avl.bat');
 stability_file = fullfile(cfg.work_dir, 'dfo_stability.txt');
+log_file       = fullfile(cfg.work_dir, 'avl_log.txt');
 
 % ── Write geometry and mass files ─────────────────────────────────────────
 buildAVLGeom(geom, avl_file);
 buildAVLMass(geom);
 
-% ── Compute cruise CL ─────────────────────────────────────────────────────
-% Level flight: L = W  ->  CL = 2mg / (rho V^2 S)
-g  = 9.81;
-CL_cruise = (2 * flight.mass * g) / (flight.rho * flight.V^2 * geom.Sref);
-
-fprintf('Flight condition:\n')
-fprintf('  V      = %.2f m/s\n',  flight.V)
-fprintf('  rho    = %.4f kg/m3\n', flight.rho)
-fprintf('  mass   = %.3f kg\n',   flight.mass)
-fprintf('  CL_cruise = %.4f\n',   CL_cruise)
-
 % ── Write AVL command file ────────────────────────────────────────────────
-% AVL reads mass file with the MASS command, then MSET applies it to the
-% run case so the trim knows the actual aircraft weight.
-% A C [CL] constrains alpha to achieve that CL.
-% D1 PM 0  constrains elevator (control 1) to zero pitching moment.
-% X executes the trimmed solution.
-% Forces are already printed to avl_log.txt after X executes.
-% ST prompts "Enter filename or <return> for screen" -- provide filename
-% directly on the next line. One blank exits OPER, then QUIT.
-
+% All filenames in the command file are bare (no path) because the batch
+% file cds into work_dir first, so AVL resolves them locally.
 fid = fopen(cmd_file, 'w');
-fprintf(fid, 'MASS %s\n', mass_file);
+fprintf(fid, 'MASS dfo.mass\n');
 fprintf(fid, 'MSET 0\n');
 fprintf(fid, 'OPER\n');
 fprintf(fid, 'A C %.6f\n', CL_cruise);
 fprintf(fid, 'D2 PM 0\n');
 fprintf(fid, 'X\n');
 fprintf(fid, 'ST\n');
-fprintf(fid, '%s\n', stability_file);
+fprintf(fid, 'dfo_stability.txt\n');
 fprintf(fid, '\n');
 fprintf(fid, 'QUIT\n');
 fclose(fid);
 
-% ── Run AVL ───────────────────────────────────────────────────────────────
-cmd = sprintf('"%s" "%s" < "%s" > "%s"', ...
-    cfg.avl_exe, avl_file, cmd_file, fullfile(cfg.work_dir, 'avl_log.txt'));
+% ── Delete any existing stability file ────────────────────────────────────
+% AVL prompts "Append/Overwrite/Cancel" if the file exists, which breaks
+% our command sequence. Deleting it first avoids the prompt entirely.
+if isfile(stability_file), delete(stability_file); end
 
+% ── Write batch file ──────────────────────────────────────────────────────
+% The batch file cds into work_dir so all filenames can be bare (no spaces).
+% The avl exe path is quoted since it may contain spaces.
+fid = fopen(bat_file, 'w');
+fprintf(fid, '@echo off\n');
+fprintf(fid, 'cd /d "%s"\n', cfg.work_dir);
+fprintf(fid, '"%s" dfo.avl < avl_run_cmd.txt > avl_log.txt\n', cfg.avl_exe);
+fclose(fid);
+
+% ── Run ───────────────────────────────────────────────────────────────────
+% cmd /c "path" is the correct Windows invocation for a batch file whose
+% path contains spaces.
 fprintf('Running AVL...\n')
-status = system(cmd);
+status = system(sprintf('cmd /c "%s"', bat_file));
+delete(bat_file);
+delete(cmd_file);
 
 % ── Check outputs ─────────────────────────────────────────────────────────
 if status ~= 0
-    warning('runAVL: AVL exited with status %d. Check avl_log.txt for details.', status)
+    warning('runAVL: AVL exited with status %d. Check avl_log.txt.', status)
 end
-
-if ~isfile(forces_file)
-    warning('runAVL: Forces output file not found. AVL may have failed during execution.')
-end
-
 if ~isfile(stability_file)
-    warning('runAVL: Stability output file not found. AVL may have failed during execution.')
+    warning('runAVL: Stability file not found. AVL may have failed.')
 end
 
-% ── Clean up and return ───────────────────────────────────────────────────
-delete(cmd_file);
-
-out.forces_file    = fullfile(cfg.work_dir, 'avl_log.txt');  % forces parsed from log
+% ── Return ────────────────────────────────────────────────────────────────
+out.forces_file    = log_file;
 out.stability_file = stability_file;
 out.status         = status;
 out.CL_cruise      = CL_cruise;
 out.flight         = flight;
 
 fprintf('Done. Output files:\n')
-fprintf('  Forces:      %s\n', forces_file)
-fprintf('  Stability:   %s\n', stability_file)
-fprintf('  AVL log:     %s\n', fullfile(cfg.work_dir, 'avl_log.txt'))
+fprintf('  Stability: %s\n', stability_file)
+fprintf('  AVL log:   %s\n', log_file)
 
 end

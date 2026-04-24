@@ -1,0 +1,18 @@
+# AVL generated files
+*.avl
+*.mass
+*.run
+#avl_log.txt
+#dfo_stability.txt
+#dfo_forces.txt
+#avl_run_cmd.txt
+#run_avl.bat
+#view_avl.bat
+#avl_pre.txt
+#avl_post.txt
+
+# macOS
+.DS_Store
+
+# matlab
+.asv

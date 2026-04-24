@@ -6,6 +6,11 @@ function buildAVLGeom(geom, filename)
 %   geom     -- geometry struct from defineGeom.m
 %   filename -- output filename, e.g. 'dfo.avl'
 %
+%   Airfoil .dat files are resolved to full paths using avlConfig so AVL
+%   can find them regardless of what directory it runs from.
+
+cfg = avlConfig();
+%
 % Open the resulting file in AVL (type 'load dfo.avl' then 'oper' then 'g')
 % to visually confirm the geometry before running any analysis.
 %
@@ -56,7 +61,7 @@ fprintf(fid, 'SECTION\n');
 fprintf(fid, '#Xle      Yle    Zle    chord   angle\n');
 fprintf(fid, '%-8.4f  0.0000  %-6.4f  %-8.4f  %.2f\n', ...
         geom.wing.x_le, geom.wing.z_le, geom.wing.chord_root, geom.wing.twist_tip*0);
-writeAirfoil(fid, geom.wing.airfoil);
+writeAirfoil(fid, geom.wing.airfoil, cfg.airfoil_dir);
 
 % Tip section
 fprintf(fid, '\nSECTION\n');
@@ -64,7 +69,7 @@ fprintf(fid, '#Xle      Yle       Zle       chord     angle\n');
 fprintf(fid, '%-8.4f  %-8.4f  %-8.4f  %-8.4f  %.2f\n', ...
         geom.wing.x_le + dx_tip, half_span, geom.wing.z_le + dz_tip, ...
         geom.wing.chord_tip, geom.wing.twist_tip);
-writeAirfoil(fid, geom.wing.airfoil);
+writeAirfoil(fid, geom.wing.airfoil, cfg.airfoil_dir);
 
 % Aileron control surface on tip section
 fprintf(fid, '\nCONTROL\n');
@@ -92,7 +97,7 @@ fprintf(fid, 'SECTION\n');
 fprintf(fid, '#Xle      Yle    Zle    chord   angle\n');
 fprintf(fid, '%-8.4f  0.0000  %-6.4f  %-8.4f  0.00\n', ...
         geom.htail.x_le, geom.htail.z_le, geom.htail.chord_root);
-writeAirfoil(fid, geom.htail.airfoil);
+writeAirfoil(fid, geom.htail.airfoil, cfg.airfoil_dir);
 fprintf(fid, '\nCONTROL\n');
 fprintf(fid, 'elevator   1.0   %.2f    0.0 0.0 0.0     1.0\n', geom.htail.elevator_hinge);
 
@@ -102,7 +107,7 @@ fprintf(fid, '#Xle      Yle       Zle       chord     angle\n');
 fprintf(fid, '%-8.4f  %-8.4f  %-8.4f  %-8.4f  0.00\n', ...
         geom.htail.x_le + htail_dx, htail_half, ...
         geom.htail.z_le + htail_dz, geom.htail.chord_tip);
-writeAirfoil(fid, geom.htail.airfoil);
+writeAirfoil(fid, geom.htail.airfoil, cfg.airfoil_dir);
 fprintf(fid, '\nCONTROL\n');
 fprintf(fid, 'elevator   1.0   %.2f    0.0 0.0 0.0     1.0\n', geom.htail.elevator_hinge);
 fprintf(fid, '\n\n');
@@ -127,7 +132,7 @@ fprintf(fid, 'SECTION\n');
 fprintf(fid, '#Xle      Yle    Zle       chord   angle\n');
 fprintf(fid, '%-8.4f  0.0000  %-6.4f  %-8.4f  0.00\n', ...
         geom.vtail.x_le, geom.vtail.z_le, geom.vtail.chord_root);
-writeAirfoil(fid, geom.vtail.airfoil);
+writeAirfoil(fid, geom.vtail.airfoil, cfg.airfoil_dir);
 fprintf(fid, '\nCONTROL\n');
 fprintf(fid, 'rudder   1.0   %.2f    0.0 0.0 0.0     1.0\n', geom.vtail.rudder_hinge);
 
@@ -137,7 +142,7 @@ fprintf(fid, '#Xle                  Yle    Zle (tip height)   chord   angle\n');
 fprintf(fid, '%-8.4f  0.0000  %-6.4f  %-8.4f  0.00\n', ...
         geom.vtail.x_le + vtail_dx, geom.vtail.z_le + geom.vtail.height, ...
         geom.vtail.chord_tip);
-writeAirfoil(fid, geom.vtail.airfoil);
+writeAirfoil(fid, geom.vtail.airfoil, cfg.airfoil_dir);
 fprintf(fid, '\nCONTROL\n');
 fprintf(fid, 'rudder   1.0   %.2f    0.0 0.0 0.0     1.0\n', geom.vtail.rudder_hinge);
 
@@ -150,7 +155,7 @@ end
 
 
 % ── Helper: write airfoil line ────────────────────────────────────────────
-function writeAirfoil(fid, airfoil_str)
+function writeAirfoil(fid, airfoil_str, airfoil_dir)
 % Handles both NACA strings and .dat filenames.
     if startsWith(airfoil_str, 'NACA') || startsWith(airfoil_str, 'naca')
         % AVL expects the keyword on one line and the 4-digit identifier
@@ -158,8 +163,10 @@ function writeAirfoil(fid, airfoil_str)
         digits = strtrim(strrep(strrep(airfoil_str, 'NACA', ''), 'naca', ''));
         fprintf(fid, 'NACA\n%s\n', digits);
     else
-        % External .dat file reference
+        % External .dat file -- write the full path so AVL finds it
+        % regardless of which directory it is run from.
+        full_path = fullfile(airfoil_dir, airfoil_str);
         fprintf(fid, 'AFILE\n');
-        fprintf(fid, '%s\n', airfoil_str);
+        fprintf(fid, '"%s"\n', full_path);
     end
 end
