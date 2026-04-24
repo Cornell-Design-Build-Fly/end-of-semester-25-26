@@ -20,6 +20,7 @@ htail_AR     = geom.htail_AR;
 vtail_height = geom.vtail_height;
 vtail_AR     = geom.vtail_AR;
 tail_arm     = geom.tail_arm;
+htail_incidence = geom.htail_incidence;
 nose_x       = geom.nose_x;
 n_ducks      = geom.n_ducks;
 n_pucks      = geom.n_pucks;
@@ -129,7 +130,7 @@ components = {
    m_vtail,            x_vtail,         0,  z0,    'Vtail';
    m_spar,             x_spar,          0,  z0,    'Tail spar';
    m_fus,              x_fus,           0,  z0,    'Fuselage';
-   m_motor_prop,       nose_x,          0,  z_lo,  'Motor+Prop';
+   m_motor_prop,       nose_x - 0.10,          0,  z_lo,  'Motor+Prop';
    m_nosecone,         nose_x + 0.04,   0,  z0,    'Nosecone';
    m_battery,          elec_x,          0,  z_lo,  'Battery';
    m_receiver,         elec_x + 0.05,   0,  z0,    'Receiver';
@@ -191,7 +192,7 @@ if ~isempty(idx_h)
     Izz = Izz - m_htail * dy(idx_h)^2 + m_htail * (htail_span/2)^2 / 3;
 end
 % Vtail correction for yaw and pitch (distributed in z)
-idx_v = find(strcmp(names, 'Vtail'));
+idx_v = find(strcmp(names, 'Vtail'), 1);
 if ~isempty(idx_v)
     Iyy = Iyy + m_vtail * vtail_height^2 / 12;
 end
@@ -214,7 +215,8 @@ mass.vtail_height = vtail_height;
 mass.wing_span    = wing_span;
 mass.htail_span   = htail_span;
 mass.vtail_chord  = vtail_chord;
-mass.vtail_AR     = vtail_AR;
+mass.vtail_AR        = vtail_AR;
+mass.htail_incidence = htail_incidence;
 
 
 %% ── Print summary ─────────────────────────────────────────────────────────

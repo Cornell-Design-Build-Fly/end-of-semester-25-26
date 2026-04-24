@@ -54,7 +54,7 @@ function aircraft = massToAVL(mass)
     aircraft.htail.chord_tip        = mass.htail_chord;
     aircraft.htail.sweep_LE         = 0;
     aircraft.htail.dihedral         = 0;
-    aircraft.htail.incidence        = -2.0;
+    aircraft.htail.incidence        = mass.htail_incidence;
     aircraft.htail.x_le             = mass.htail_x_le;
     aircraft.htail.z_le             = 0;
     aircraft.htail.airfoil          = 'NACA 0012';
@@ -95,4 +95,5 @@ function aircraft = massToAVL(mass)
         aircraft.tail_arm, aircraft.Vht, aircraft.Vvt)
     fprintf('  Mass     = %.3f kg\n', aircraft.mass)
     fprintf('  CG       = %.4f m (%.1f%% MAC)\n', aircraft.xref, aircraft.xref/aircraft.Cref*100)
+
 end

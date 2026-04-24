@@ -20,6 +20,7 @@ htail_AR     = geom.htail_AR;
 vtail_height = geom.vtail_height;
 vtail_AR     = geom.vtail_AR;
 tail_arm     = geom.tail_arm;
+htail_incidence = geom.htail_incidence;
 nose_x       = geom.nose_x;
 n_ducks      = geom.n_ducks;
 n_pucks      = geom.n_pucks;
@@ -36,7 +37,7 @@ htail_x_le = tail_arm + 0.25*wing_chord - 0.25*htail_chord;
 vtail_x_le = htail_x_le;   % vtail at same station as htail
 
 % Electronics sit ~10 cm aft of the motor
-elec_x = nose_x + 0.10;
+elec_x = nose_x  0.10;
 
 mass.geom.wing_chord  = wing_chord;
 mass.geom.htail_chord = htail_chord;
@@ -88,10 +89,10 @@ x_gear_main  =  0.40 * wing_chord;
 x_gear_front =  0.50 * nose_x;
 
 % Banner drop mechanism: at htail station
-% x_banner_drop = htail_x_le;
+x_banner_drop = htail_x_le;
 
 % Banner (towed): just aft of htail TE
-% x_banner = htail_x_le + htail_chord + 0.05;
+x_banner = htail_x_le + htail_chord + 0.05;
 
 % Payload: fixed positions regardless of quantity
 x_duck = 0.191;   % [m] from wing LE
@@ -109,8 +110,8 @@ m_servo_bat   = 0.045;
 m_gyro        = 0.021;
 m_gear_main   = 0.125;
 m_gear_front  = 0.105;
-% m_banner_drop = 0.136;
-% m_banner      = 0.233;
+m_banner_drop = 0.136;
+m_banner      = 0.233;
 m_fasteners   = 0.004;
 m_duck_each   = 0.116;
 m_puck_each   = 0.190;
@@ -129,7 +130,7 @@ components = {
    m_vtail,            x_vtail,         0,  z0,    'Vtail';
    m_spar,             x_spar,          0,  z0,    'Tail spar';
    m_fus,              x_fus,           0,  z0,    'Fuselage';
-   m_motor_prop,       nose_x,          0,  z_lo,  'Motor+Prop';
+   m_motor_prop,       nose_x + 0.1,          0,  z_lo,  'Motor+Prop';
    m_nosecone,         nose_x + 0.04,   0,  z0,    'Nosecone';
    m_battery,          elec_x,          0,  z_lo,  'Battery';
    m_receiver,         elec_x + 0.05,   0,  z0,    'Receiver';
@@ -137,9 +138,9 @@ components = {
    m_gyro,             elec_x + 0.02,   0,  z0,    'Gyro';
    m_gear_main,        x_gear_main,     0,  z_lo,  'Main gear';
    m_gear_front,       x_gear_front,    0,  z_lo,  'Front gear';
-   % m_banner_drop,      x_banner_drop,   0,  z0,    'Banner drop';
-   % m_banner,           x_banner,        0,  z0,    'Banner';
-   m_fasteners,        0.0,             0,  z0,    'Fasteners';
+   % m_banner_drop,    x_banner_drop,   0,  z0,    'Banner drop';  % commented out
+   % m_banner,         x_banner,        0,  z0,    'Banner';        % commented out
+   % m_fasteners,      0.0,             0,  z0,    'Fasteners';     % commented out
    n_ducks*m_duck_each, x_duck,         0,  z0,    sprintf('%d Duck(s)', n_ducks);
    n_pucks*m_puck_each, x_puck,         0,  z0,    sprintf('%d Puck(s)', n_pucks);
 };
@@ -191,7 +192,7 @@ if ~isempty(idx_h)
     Izz = Izz - m_htail * dy(idx_h)^2 + m_htail * (htail_span/2)^2 / 3;
 end
 % Vtail correction for yaw and pitch (distributed in z)
-idx_v = find(strcmp(names, 'Vtail'));
+idx_v = find(strcmp(names, 'Vtail'), 1);
 if ~isempty(idx_v)
     Iyy = Iyy + m_vtail * vtail_height^2 / 12;
 end
@@ -214,7 +215,8 @@ mass.vtail_height = vtail_height;
 mass.wing_span    = wing_span;
 mass.htail_span   = htail_span;
 mass.vtail_chord  = vtail_chord;
-mass.vtail_AR     = vtail_AR;
+mass.vtail_AR        = vtail_AR;
+mass.htail_incidence = htail_incidence;
 
 
 %% ── Print summary ─────────────────────────────────────────────────────────
@@ -233,102 +235,5 @@ fprintf('  Ixx = %.4f  Iyy = %.4f  Izz = %.4f  Ixz = %.4f  [kg m^2]\n', ...
 
 %% ── Plot ──────────────────────────────────────────────────────────────────
 % plotMassLayout(mass);
-
-end
-
-% Side-view mass layout diagram.
-
-col_structure = [0.07 0.22 0.29];  % navy
-col_propulsion = [0.70 0.11 0.11]; % red
-col_payload    = [0.20 0.55 0.20]; % green
-col_misc       = [0.55 0.55 0.55]; % gray
-
-figure('Color', 'w');
-hold on;
-
-wc  = mass.wing_chord;
-hxl = mass.htail_x_le;
-hxr = hxl + mass.htail_chord;
-nx  = mass.nose_x;
-ws  = mass.wing_span;
-hs  = mass.htail_span;
-vh  = mass.vtail_height;
-
-% ── Lifting surfaces (thin rectangles, front view squashed into side view) ─
-patch_h = 0.012;   % visual height of surface rectangles
-
-% Wing
-patch([0, wc, wc, 0], [-patch_h, -patch_h, patch_h, patch_h]*2, ...
-    col_structure, 'FaceAlpha', 0.15, 'EdgeColor', col_structure, 'LineWidth', 1.2)
-
-% Htail
-patch([hxl, hxr, hxr, hxl], [-patch_h, -patch_h, patch_h, patch_h], ...
-    col_structure, 'FaceAlpha', 0.15, 'EdgeColor', col_structure, 'LineWidth', 1.2)
-
-% Vtail (vertical)
-patch([mass.vtail_x_le, mass.vtail_x_le + mass.vtail_height/mass.htail_span*mass.htail_chord, ...
-       mass.vtail_x_le + mass.vtail_height/mass.htail_span*mass.htail_chord, mass.vtail_x_le], ...
-    [patch_h, patch_h, patch_h + vh, patch_h + vh], ...
-    col_structure, 'FaceAlpha', 0.12, 'EdgeColor', col_structure, 'LineWidth', 1.0)
-
-% Fuselage centerline
-plot([nx, hxr], [0, 0], '-', 'Color', [0.7 0.7 0.7], 'LineWidth', 1.0)
-
-% ── Mass bubbles ──────────────────────────────────────────────────────────
-r_scale = 0.022;   % bubble radius scale factor
-
-for k = 1:numel(mass.m_vec)
-    xi = mass.x_vec(k);
-    zi = mass.z_vec(k);
-    r  = r_scale * sqrt(mass.m_vec(k));
-    name = mass.names{k};
-
-    % Color by category
-    if contains(name, {'Motor','Battery','Nosecone','Receiver','Servo','Gyro','Gear','Fastener'})
-        col = col_propulsion;
-    elseif contains(name, {'Duck','Puck'})
-        col = col_payload;
-    elseif contains(name, {'Wing','Htail','Vtail','spar','Fuselage','Banner'})
-        col = col_structure;
-    else
-        col = col_misc;
-    end
-
-    % Draw circle
-    theta = linspace(0, 2*pi, 40);
-    fill(xi + r*cos(theta), zi + r*sin(theta), col, ...
-         'FaceAlpha', 0.75, 'EdgeColor', col*0.6, 'LineWidth', 0.8)
-
-    % Label: offset to avoid overlap
-    text(xi, zi + r + 0.005, name, 'FontSize', 7, ...
-         'HorizontalAlignment', 'center', 'Color', col*0.7, 'Interpreter', 'none')
-end
-
-% ── CG marker ─────────────────────────────────────────────────────────────
-plot(mass.CG(1), mass.CG(3), 'rx', 'MarkerSize', 14, 'LineWidth', 2.5)
-text(mass.CG(1), mass.CG(3) - 0.025, ...
-    sprintf('CG  %.3f m\n(%.1f%% MAC)', mass.CG(1), mass.CG(1)/wc*100), ...
-    'HorizontalAlignment', 'center', 'FontSize', 9, 'Color', [0.7 0.1 0.1], ...
-    'FontWeight', 'bold')
-
-% ── Axes ──────────────────────────────────────────────────────────────────
-xline(0, ':', 'Color', [0.6 0.6 0.6], 'LineWidth', 0.8)   % wing LE
-xline(wc, ':', 'Color', [0.6 0.6 0.6], 'LineWidth', 0.8)  % wing TE
-
-xlabel('x  (m from wing LE, positive aft)',  'FontSize', 10)
-ylabel('z  (m, positive up)',                'FontSize', 10)
-title(sprintf('Mass Layout   —   total %.3f kg   CG at %.1f%% MAC', ...
-    mass.total, mass.CG(1)/wc*100), 'FontSize', 11, 'FontWeight', 'normal')
-
-% Legend patches
-patch(nan, nan, col_structure,  'FaceAlpha', 0.6, 'EdgeColor', 'none', 'DisplayName', 'Structure')
-patch(nan, nan, col_propulsion, 'FaceAlpha', 0.6, 'EdgeColor', 'none', 'DisplayName', 'Propulsion/Elec')
-patch(nan, nan, col_payload,    'FaceAlpha', 0.6, 'EdgeColor', 'none', 'DisplayName', 'Payload')
-plot(nan, nan, 'rx', 'MarkerSize', 10, 'LineWidth', 2, 'DisplayName', 'CG')
-legend('Location', 'northeast', 'FontSize', 9)
-
-grid on; box on;
-axis equal
-hold off;
 
 end

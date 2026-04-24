@@ -23,6 +23,7 @@ vxl  = mass.vtail_x_le;
 vxr  = vxl + mass.vtail_chord;
 vh   = mass.vtail_height;
 fus_w = 0.05;   % visual fuselage half-width [m]
+inc  = mass.htail_incidence;   % [deg] htail incidence angle
 
 % ═════════════════════════════════════════════════════════════════════════
 %% Figure 1 — Side view (XZ)
@@ -41,11 +42,18 @@ patch([0, wc, wc, 0], [-wh, -wh, wh, wh], ...
     col_struct, 'FaceAlpha', 0.20, 'EdgeColor', col_struct, 'LineWidth', 1.4, ...
     'HandleVisibility', 'off')
 
-% Htail
-th = 0.010;
-patch([hxl, hxr, hxr, hxl], [-th, -th, th, th], ...
-    col_struct, 'FaceAlpha', 0.20, 'EdgeColor', col_struct, 'LineWidth', 1.2, ...
-    'HandleVisibility', 'off')
+% Htail -- rotated by incidence angle about its quarter-chord point
+th   = 0.010;
+hqc  = hxl + 0.25 * mass.htail_chord;   % quarter-chord x position
+inc_rad = inc * pi/180;
+% Corner offsets from QC point before rotation: [LE, TE] x [-th, +th]
+dx_corners = [hxl - hqc, hxr - hqc, hxr - hqc, hxl - hqc];
+dz_corners = [-th, -th, th, th];
+% Rotate in XZ plane
+hx_rot = hqc + dx_corners * cos(inc_rad) - dz_corners * sin(inc_rad);
+hz_rot =       dx_corners * sin(inc_rad) + dz_corners * cos(inc_rad);
+patch(hx_rot, hz_rot, col_struct, 'FaceAlpha', 0.20, 'EdgeColor', col_struct, ...
+    'LineWidth', 1.2, 'HandleVisibility', 'off')
 
 % Vtail (true chord width, spans upward from z=0)
 patch([vxl, vxr, vxr, vxl], [th, th, th+vh, th+vh], ...
@@ -116,6 +124,11 @@ patch([0, wc, wc, 0], [-ws/2, -ws/2, ws/2, ws/2], ...
 patch([hxl, hxr, hxr, hxl], [-hhs, -hhs, hhs, hhs], ...
     col_struct, 'FaceAlpha', 0.15, 'EdgeColor', col_struct, 'LineWidth', 1.2, ...
     'HandleVisibility', 'off')
+
+% Htail incidence annotation
+text(hxl + 0.5*mass.htail_chord, hhs + 0.02, ...
+     sprintf('i_h = %.1f°', inc), 'FontSize', 8, ...
+     'HorizontalAlignment', 'center', 'Color', col_struct*0.7)
 
 % Vtail (centerline projection -- top view shows it as a chordwise line)
 plot([vxl, vxr], [0, 0], '-', 'Color', col_struct, 'LineWidth', 2.5, ...
