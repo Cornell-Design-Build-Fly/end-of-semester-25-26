@@ -47,14 +47,14 @@ fprintf(fid, 'D2 PM 0\n');
 fprintf(fid, 'X\n');
 fprintf(fid, 'ST\n');
 fprintf(fid, 'dfo_stability.txt\n');
-fprintf(fid, '\n');
+fprintf(fid, 'O\n');   % if file exists: overwrite; if not: harmless Options cmd
+fprintf(fid, '\n');    % exit Options submenu if O was interpreted as Options
+fprintf(fid, '\n');    % exit OPER menu
 fprintf(fid, 'QUIT\n');
 fclose(fid);
 
 % ── Delete any existing stability file ────────────────────────────────────
-% AVL prompts "Append/Overwrite/Cancel" if the file exists, which breaks
-% our command sequence. Deleting it first avoids the prompt entirely.
-if isfile(stability_file), delete(stability_file); end
+% Overwrite handled in command file with 'O' response (see below)
 
 % ── Write batch file ──────────────────────────────────────────────────────
 % The batch file cds into work_dir so all filenames can be bare (no spaces).

@@ -43,23 +43,23 @@
  Mass        =    3.456      Munit
  Mass        =    3.456      kg
 
- Ref. x,y,z  =   0.3940E-01   0.000     -0.9200E-02  Lunit
- C.G. x,y,z  =   0.1098       0.000     -0.2500E-01  Lunit
- C.G. x,y,z  =   0.1098       0.000     -0.2500E-01  m
+ Ref. x,y,z  =   0.4140E-01   0.000     -0.9200E-02  Lunit
+ C.G. x,y,z  =   0.1100       0.000     -0.2500E-01  Lunit
+ C.G. x,y,z  =   0.1100       0.000     -0.2500E-01  m
 
- Ixx -Ixy -Ixz   |   0.4320E-02  -0.000     -0.2350E-01  |
-      Iyy -Iyz = |               0.4366      -0.000      |  kg-m^2
-           Izz   |                           0.4323      |
+ Ixx -Ixy -Ixz   |   0.4320E-02  -0.000     -0.2352E-01  |
+      Iyy -Iyz = |               0.4379      -0.000      |  kg-m^2
+           Izz   |                           0.4336      |
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  Apparent mass, inertia
 
  mxx  mxy  mxz   |    0.000       0.000       0.000      |
-      myy  myz = |               0.3758E-02   0.000      |  kg
-           mzz   |                           0.1107      |
+      myy  myz = |               0.4975E-02  0.6641E-18  |  kg
+           mzz   |                           0.1130      |
 
- Ixx -Ixy -Ixz   |   0.1283E-01 -0.3818E-18 -0.4483E-03  |
-      Iyy -Iyz = |               0.8766E-02   0.000      |  kg-m^2
-           Izz   |                           0.3423E-02  |
+ Ixx -Ixy -Ixz   |   0.1313E-01  0.1828E-18 -0.9041E-03  |
+      Iyy -Iyz = |               0.1164E-01  0.7782E-21  |  kg-m^2
+           Izz   |                           0.3135E-02  |
 
  ---------------------------------------------------------------
  Trying to read file: dfo.run  ...
@@ -93,23 +93,23 @@
  Mass        =    3.456      Munit
  Mass        =    3.456      kg
 
- Ref. x,y,z  =   0.3940E-01   0.000     -0.9200E-02  Lunit
- C.G. x,y,z  =   0.1098       0.000     -0.2500E-01  Lunit
- C.G. x,y,z  =   0.1098       0.000     -0.2500E-01  m
+ Ref. x,y,z  =   0.4140E-01   0.000     -0.9200E-02  Lunit
+ C.G. x,y,z  =   0.1100       0.000     -0.2500E-01  Lunit
+ C.G. x,y,z  =   0.1100       0.000     -0.2500E-01  m
 
- Ixx -Ixy -Ixz   |   0.4320E-02  -0.000     -0.2350E-01  |
-      Iyy -Iyz = |               0.4366      -0.000      |  kg-m^2
-           Izz   |                           0.4323      |
+ Ixx -Ixy -Ixz   |   0.4320E-02  -0.000     -0.2352E-01  |
+      Iyy -Iyz = |               0.4379      -0.000      |  kg-m^2
+           Izz   |                           0.4336      |
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  Apparent mass, inertia
 
  mxx  mxy  mxz   |    0.000       0.000       0.000      |
-      myy  myz = |               0.3758E-02   0.000      |  kg
-           mzz   |                           0.1107      |
+      myy  myz = |               0.4975E-02  0.6641E-18  |  kg
+           mzz   |                           0.1130      |
 
- Ixx -Ixy -Ixz   |   0.1283E-01 -0.3818E-18 -0.4483E-03  |
-      Iyy -Iyz = |               0.8766E-02   0.000      |  kg-m^2
-           Izz   |                           0.3423E-02  |
+ Ixx -Ixy -Ixz   |   0.1313E-01  0.1828E-18 -0.9041E-03  |
+      Iyy -Iyz = |               0.1164E-01  0.7782E-21  |  kg-m^2
+           Izz   |                           0.3135E-02  |
 
  Use MSET to apply these mass,inertias to run cases
 
@@ -158,7 +158,7 @@
 
   variable          constraint              
   ------------      ------------------------
-  A lpha        ->  CL          =  0.2164         
+  A lpha        ->  CL          =  0.2168         
   B eta         ->  beta        =   0.000         
   R oll  rate   ->  pb/2V       =   0.000         
   P itch rate   ->  qc/2V       =   0.000         
@@ -196,7 +196,7 @@
 
   variable          constraint              
   ------------      ------------------------
-  A lpha        ->  CL          =  0.2164         
+  A lpha        ->  CL          =  0.2168         
   B eta         ->  beta        =   0.000         
   R oll  rate   ->  pb/2V       =   0.000         
   P itch rate   ->  qc/2V       =   0.000         
@@ -235,9 +235,9 @@
   Building bound-vortex velocity matrix...
 
  iter d(alpha)   d(beta)    d(pb/2V)   d(qc/2V)   d(rb/2V)   aileron    elevator   rudder     
-   1 -0.105E+01 -0.000E+00 -0.000E+00 -0.000E+00  0.000E+00 -0.000E+00 -0.357E+01 -0.000E+00
-   2  0.187E-02 -0.000E+00  0.000E+00 -0.000E+00  0.000E+00 -0.000E+00 -0.146E-02 -0.000E+00
-   3  0.465E-08 -0.000E+00 -0.000E+00  0.362E-26  0.000E+00 -0.000E+00 -0.149E-07 -0.000E+00
+   1 -0.110E+01 -0.000E+00 -0.000E+00 -0.000E+00  0.000E+00 -0.000E+00 -0.298E+01 -0.000E+00
+   2  0.186E-02 -0.000E+00  0.000E+00 -0.000E+00  0.000E+00 -0.000E+00 -0.731E-02 -0.000E+00
+   3  0.311E-08 -0.000E+00  0.000E+00 -0.000E+00  0.000E+00 -0.000E+00 -0.201E-07 -0.000E+00
  ---------------------------------------------------------------
  Vortex Lattice Output -- Total Forces
 
@@ -247,28 +247,28 @@
      # Vortices = 184
 
   Sref = 0.36000       Cref = 0.30000       Bref =  1.2000    
-  Xref = 0.10977       Yref =  0.0000       Zref =-0.25000E-01
+  Xref = 0.10998       Yref =  0.0000       Zref =-0.25000E-01
 
  Standard axis orientation,  X fwd, Z down         
 
  Run case:  -unnamed-                              
 
-  Alpha =  -1.05236     pb/2V =  -0.00000     p'b/2V =  -0.00000
+  Alpha =  -1.09465     pb/2V =  -0.00000     p'b/2V =  -0.00000
   Beta  =   0.00000     qc/2V =   0.00000
   Mach  =     0.000     rb/2V =  -0.00000     r'b/2V =  -0.00000
 
-  CXtot =  -0.00848     Cltot =   0.00000     Cl'tot =   0.00000
+  CXtot =  -0.00861     Cltot =  -0.00000     Cl'tot =  -0.00000
   CYtot =  -0.00000     Cmtot =   0.00000
-  CZtot =  -0.21632     Cntot =   0.00000     Cn'tot =   0.00000
+  CZtot =  -0.21666     Cntot =   0.00000     Cn'tot =   0.00000
 
-  CLtot =   0.21644
-  CDtot =   0.00451
-  CDvis =   0.00000     CDind = 0.0045071
-  CLff  =   0.21636     CDff  = 0.0038676    | Trefftz
-  CYff  =  -0.00000         e =    0.9632    | Plane  
+  CLtot =   0.21679
+  CDtot =   0.00447
+  CDvis =   0.00000     CDind = 0.0044699
+  CLff  =   0.21614     CDff  = 0.0038592    | Trefftz
+  CYff  =  -0.00000         e =    0.9633    | Plane  
 
    aileron         =   0.00000
-   elevator        =  -3.56994
+   elevator        =  -2.99056
    rudder          =   0.00000
 
  ---------------------------------------------------------------
@@ -278,7 +278,7 @@
 
   variable          constraint              
   ------------      ------------------------
-  A lpha        ->  CL          =  0.2164         
+  A lpha        ->  CL          =  0.2168         
   B eta         ->  beta        =   0.000         
   R oll  rate   ->  pb/2V       =   0.000         
   P itch rate   ->  qc/2V       =   0.000         
@@ -312,12 +312,14 @@
 
  .OPER (case 1/1)   c>  
 Enter filename, or <return> for screen output   s>  
+ File exists.  Append/Overwrite/Cancel  (A/O/C)?  C
+
  Operation of run case 1/1:   -unnamed-                              
  ==========================================================
 
   variable          constraint              
   ------------      ------------------------
-  A lpha        ->  CL          =  0.2164         
+  A lpha        ->  CL          =  0.2168         
   B eta         ->  beta        =   0.000         
   R oll  rate   ->  pb/2V       =   0.000         
   P itch rate   ->  qc/2V       =   0.000         
@@ -350,4 +352,5 @@ Enter filename, or <return> for screen output   s>
   MRF  machine-readable format CPOM OML surface pressures
 
  .OPER (case 1/1)   c>  
+ AVL   c>  
  AVL   c>  
