@@ -69,6 +69,8 @@ fclose(fid);
 % cmd /c "path" is the correct Windows invocation for a batch file whose
 % path contains spaces.
 fprintf('Running AVL...\n')
+global pct_done;
+fprintf('Progress: case %.2f%% done\n', pct_done);
 status = system(sprintf('cmd /c "%s"', bat_file));
 delete(bat_file);
 delete(cmd_file);

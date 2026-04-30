@@ -16,3 +16,6 @@
 
 # matlab
 .asv
+
+# documentation
+*.docx

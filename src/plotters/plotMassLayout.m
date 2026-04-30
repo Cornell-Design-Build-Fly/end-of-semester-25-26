@@ -23,7 +23,7 @@ vxl  = mass.vtail_x_le;
 vxr  = vxl + mass.vtail_chord;
 vh   = mass.vtail_height;
 fus_w = 0.05;   % visual fuselage half-width [m]
-inc  = mass.htail_incidence;   % [deg] htail incidence angle
+inc  = -1 * mass.htail_incidence;   % [deg] htail incidence angle
 
 % ═════════════════════════════════════════════════════════════════════════
 %% Figure 1 — Side view (XZ)
