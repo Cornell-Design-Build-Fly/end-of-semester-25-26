@@ -1,8 +1,8 @@
 Duck Force One
 0.0                        !Mach
 0    0    0.0              !iYsym  iZsym  Zsym
-0.4114   0.3429   1.2000     !Sref  Cref  Bref
-0.0402   0.0000   -0.0071    !Xref  Yref  Zref (CG location)
+0.3600   0.3000   1.2000     !Sref  Cref  Bref
+0.0414   0.0000   -0.0092    !Xref  Yref  Zref (CG location)
 
 #=============================================================
 SURFACE
@@ -17,13 +17,13 @@ ANGLE
 
 SECTION
 #Xle      Yle    Zle    chord   angle
-0.0000    0.0000  0.0000  0.3429    0.00
+0.0000    0.0000  0.0000  0.3000    0.00
 AFILE
 "C:\Users\kaspe\OneDrive\Cornell\All\Coding\end-of-semester-25-26\src\avl\wortmanFX60-126.dat"
 
 SECTION
 #Xle      Yle       Zle       chord     angle
-0.0000    0.6000    0.0843    0.3429    0.00
+0.0000    0.6000    0.0000    0.3000    0.00
 AFILE
 "C:\Users\kaspe\OneDrive\Cornell\All\Coding\end-of-semester-25-26\src\avl\wortmanFX60-126.dat"
 
@@ -40,11 +40,11 @@ YDUPLICATE
 0.0
 
 ANGLE
-2.0
+-2.0
 
 SECTION
 #Xle      Yle    Zle    chord   angle
-0.6057    0.0000  0.0000  0.1200    0.00
+0.8850    0.0000  0.0000  0.1600    0.00
 NACA
 0012
 
@@ -53,7 +53,7 @@ elevator   1.0   0.70    0.0 0.0 0.0     1.0
 
 SECTION
 #Xle      Yle       Zle       chord     angle
-0.6057    0.1500    0.0000    0.1200    0.00
+0.8850    0.2000    0.0000    0.1600    0.00
 NACA
 0012
 
@@ -68,7 +68,7 @@ Vertical Stabilizer
 
 SECTION
 #Xle      Yle    Zle       chord   angle
-0.6057    0.0000  0.0000  0.1600    0.00
+0.8850    0.0000  0.0000  0.1333    0.00
 NACA
 0012
 
@@ -77,7 +77,7 @@ rudder   1.0   0.70    0.0 0.0 0.0     1.0
 
 SECTION
 #Xle                  Yle    Zle (tip height)   chord   angle
-0.6057    0.0000  0.2400  0.1600    0.00
+0.8850    0.0000  0.2000  0.1333    0.00
 NACA
 0012
 
