@@ -1,4 +1,14 @@
 # End of Semester Plane Design
+## Working Github & MATLAB
+On the top right corner in Github you should see a 'code > 
+download zip' icon. If you click that and then extract the files onto your
+latop, you can just open the new folder in MATLAB.
+
+Before doing anything else, right click on the `src` folder and
+select 'add to path > Selected folder and subfolders'. This
+ensures MATLAB has access to all the necessary files we'll
+be using. Now we can start!
+
 ## What is AVL?
 AVL (Athena Vortex Lattice) is a program made by MIT to
 analyze airfoils and aircraft. It is similar in function 
@@ -20,11 +30,6 @@ doubling times, and climb rates
 mission score
 
 ## Getting started
-Before doing anything, right click on the `src` folder and
-select 'add to path > Selected folder and subfolders'. This
-ensures MATLAB has access to all the necessary files we'll
-be using. Now we can start!
-
 First, walk through the `avlInteractive.mlx` file, which 
 discusses the geomtry and aerodynamics of the 2025-26
 DBF plane design. Values don't really need to be changed
